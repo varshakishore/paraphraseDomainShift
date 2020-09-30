@@ -38,7 +38,6 @@ def loadData(data_path, src):
         test = data_msr_test
 
     elif src == 'twitter':
-        #twitter data
         data_twitter = pd.read_csv(data_path+'twitter/Twitter_URL_Corpus_train.txt', sep='\t', header=None)
         data_twitter.columns = ['utt1', 'utt2', 'paraphrase', 'link']
         data_twitter = data_twitter[['utt1', 'utt2', 'paraphrase']]
@@ -62,8 +61,20 @@ def loadData(data_path, src):
         val = val.reset_index()
         train = train.reset_index()
         test = data_twitter_test
-        
+    elif src == 'paws':
+        #twitter data
+        train = pd.read_csv(data_path+'PAWS/final/train.tsv', sep='\t', skiprows=1, names=['id', 'utt1', 'utt2', 'paraphrase'])
+        test = pd.read_csv(data_path+'PAWS/final/test.tsv', sep='\t', skiprows=1, names=['id', 'utt1', 'utt2', 'paraphrase'])
+        val = pd.read_csv(data_path+'PAWS/final/dev.tsv', sep='\t', skiprows=1, names=['id', 'utt1', 'utt2', 'paraphrase'])
+    elif src == 'paws_qqp':
+        #twitter data
+        train = pd.read_csv(data_path+'PAWS/paws_qqp/train.tsv', sep='\t', skiprows=1, names=['id', 'utt1', 'utt2', 'paraphrase'])
+        dev_test = pd.read_csv(data_path+'PAWS/paws_qqp/dev_and_test.tsv', sep='\t', skiprows=1, names=['id', 'utt1', 'utt2', 'paraphrase'])
+        val = dev_test[:int(len(dev_test)/2)]
+        test = dev_test[int(len(dev_test)/2):]
+        val = val.reset_index()
+        test = test.reset_index()
     else:
-        raise Exception("Invalid data source!")
+        raise Exception("Invalid data source!",src)
     
-    return train, test, val
+    return train[:12000], test[:2000], val[:2000]
